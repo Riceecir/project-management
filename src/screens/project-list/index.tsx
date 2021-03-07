@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { List } from './list'
 import { SearchPanel } from './search-panel'
 import { cleanObject } from '../../utils'
+import { useDebounce } from '../../utils/custom-hook'
 
 const apiUrl = process.env.REACT_APP_API_URL
 
@@ -13,6 +14,7 @@ export const ProjectList = () => {
   })
   const [users, setUsers] = useState([])
   const [list, setList] = useState([])
+  const debounceParam = useDebounce(param, 300)
 
   /* 获取负责人列表 */
   useEffect(() => {
@@ -32,7 +34,7 @@ export const ProjectList = () => {
         setList(await res.json())
       }
     })
-  }, [param])
+  }, [debounceParam])
 
   return <div>
     <SearchPanel param={param} setParam={setParam} users={users} />

@@ -1,10 +1,12 @@
-export const isFalsy = (val) => val === 0 ? false : !val
+export const isFalsy = (val: any) => val === 0 ? false : !val
 
 /* 清除无效值 */
-export const cleanObject = (obj) => {
+export const cleanObject = (obj: object) => {
   const result = {...obj}
   Object.keys(result).forEach(key => {
+    // @ts-ignore
     if (isFalsy(result[key])) {
+      // @ts-ignore
       delete result[key]
     }
   })
@@ -13,15 +15,16 @@ export const cleanObject = (obj) => {
 }
 
 /* 函数防抖 */
-const debounce = (func, delay = 300) => {
-  let timeout;
+const debounce = (func: () => void, delay = 300) => {
+  let timeout: any;
 
-  return (...param) => {
+  return (...param: any) => {
     if (timeout) {
       clearTimeout(timeout)
     }
 
     timeout = setTimeout(function() {
+      // @ts-ignore
       typeof func === 'function' && func(...param)
     }, delay)
   }
