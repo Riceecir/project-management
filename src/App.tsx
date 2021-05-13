@@ -1,11 +1,11 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { Login } from './screens/login'
 import { ProjectList } from './screens/project-list'
 
 function App() {
   return (
     <div className="App">
+      <Login />
       <ProjectList />
     </div>
   );
