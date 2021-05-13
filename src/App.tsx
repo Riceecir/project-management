@@ -1,6 +1,6 @@
-import './App.css';
-import { Login } from './screens/login'
-import { ProjectList } from './screens/project-list'
+import "./App.css";
+import { Login } from "./screens/login";
+import { ProjectList } from "./screens/project-list";
 
 function App() {
   return (
