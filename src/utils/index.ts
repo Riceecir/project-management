@@ -1,18 +1,18 @@
-export const isFalsy = (val: any) => val === 0 ? false : !val
+export const isFalsy = (val: unknown) => (val === 0 ? false : !val);
 
 /* 清除无效值 */
 export const cleanObject = (obj: object) => {
-  const result = {...obj}
-  Object.keys(result).forEach(key => {
+  const result = { ...obj };
+  Object.keys(result).forEach((key) => {
     // @ts-ignore
     if (isFalsy(result[key])) {
       // @ts-ignore
-      delete result[key]
+      delete result[key];
     }
-  })
+  });
 
-  return result
-}
+  return result;
+};
 
 /* 函数防抖 */
 const debounce = (func: () => void, delay = 300) => {
@@ -20,12 +20,12 @@ const debounce = (func: () => void, delay = 300) => {
 
   return (...param: any) => {
     if (timeout) {
-      clearTimeout(timeout)
+      clearTimeout(timeout);
     }
 
-    timeout = setTimeout(function() {
+    timeout = setTimeout(function () {
       // @ts-ignore
-      typeof func === 'function' && func(...param)
-    }, delay)
-  }
-}
+      typeof func === "function" && func(...param);
+    }, delay);
+  };
+};
