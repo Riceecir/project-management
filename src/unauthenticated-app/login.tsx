@@ -13,11 +13,6 @@ export const Login = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      {user && (
-        <div>
-          登录成功! name: {user?.name}, token: {user?.token}
-        </div>
-      )}
       <div>
         <label htmlFor="username">用户名</label>
         <input type="text" id={"username"} />
