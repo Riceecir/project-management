@@ -1,29 +1,30 @@
 import { useAuth } from "context/auth-context";
-import React, { FormEvent } from "react";
+import React from "react";
+import { Form, Input, Button } from "antd";
 
 export const Login = () => {
   const { login, user } = useAuth();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
-    e.preventDefault();
-    const username = (e.currentTarget.elements[0] as HTMLInputElement).value;
-    const password = (e.currentTarget.elements[1] as HTMLInputElement).value;
-    login({ username, password });
-  };
-
+  /* onFinish 根据 Form.Item 返回对应的 object */
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="username">用户名</label>
-        <input type="text" id={"username"} />
-      </div>
+    <Form onFinish={login}>
+      <Form.Item
+        name="username"
+        rules={[{ required: true, message: "请输入用户名" }]}
+      >
+        <Input placeholder="用户名" id="username" />
+      </Form.Item>
 
-      <div>
-        <label htmlFor="password">密码</label>
-        <input type="password" id={"password"} />
-      </div>
+      <Form.Item
+        name="password"
+        rules={[{ required: true, message: "请输入密码" }]}
+      >
+        <Input.Password placeholder="密码" id="password" />
+      </Form.Item>
 
-      <button type="submit">登录</button>
-    </form>
+      <Button htmlType="submit" type="primary">
+        登录
+      </Button>
+    </Form>
   );
 };

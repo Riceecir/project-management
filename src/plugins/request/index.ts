@@ -25,7 +25,7 @@ export const http = async (
 
   /* 判断 method 设置请求参数 */
   if (config.method.toUpperCase() === "GET") {
-    endpoint += qs.stringify(data);
+    endpoint += `?${qs.stringify(data)}`;
   } else {
     config.body = JSON.stringify(data);
   }
