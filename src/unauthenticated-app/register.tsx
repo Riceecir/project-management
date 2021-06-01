@@ -21,7 +21,7 @@ export const Register = () => {
         <Input.Password placeholder="密码" id="password" />
       </Form.Item>
 
-      <Button htmlType="submit" type="primary">
+      <Button block htmlType="submit" type="primary">
         注册
       </Button>
     </Form>
