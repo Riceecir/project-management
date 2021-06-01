@@ -4,6 +4,7 @@ import { List } from "./list";
 import { SearchPanel } from "./search-panel";
 import { cleanObject } from "../../utils";
 import { useDebounce } from "../../utils/custom-hook";
+import { useHttp } from "plugins/request";
 
 const apiUrl = process.env.REACT_APP_API_URL;
 
@@ -15,25 +16,16 @@ export const ProjectList = () => {
   const [users, setUsers] = useState([]);
   const [list, setList] = useState([]);
   const debounceParam = useDebounce(param, 300);
+  const http = useHttp();
 
   /* 获取负责人列表 */
   useEffect(() => {
-    fetch(`${apiUrl}/users`).then(async (res) => {
-      if (res.ok) {
-        setUsers(await res.json());
-      }
-    });
+    http("users").then(setUsers);
   }, []);
 
   /* 获取列表 */
   useEffect(() => {
-    fetch(`${apiUrl}/projects?${qs.stringify(cleanObject(param))}`).then(
-      async (res) => {
-        if (res.ok) {
-          setList(await res.json());
-        }
-      }
-    );
+    http("projects", { data: cleanObject(param) }).then(setList);
   }, [debounceParam]);
 
   return (

@@ -13,6 +13,7 @@ export const handleUserResponse = ({ user }: { user: User }) => {
   return user;
 };
 
+/* 登录 */
 export const login = async (data: { username: string; password: string }) => {
   return fetch(`${apiUrl}/login`, {
     method: "POST",
@@ -29,6 +30,7 @@ export const login = async (data: { username: string; password: string }) => {
   });
 };
 
+/* 注册 */
 export const register = async (data: {
   username: string;
   password: string;
