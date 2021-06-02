@@ -1,12 +1,27 @@
 import { useAuth } from "context/auth-context";
 import React from "react";
 import { Form, Input, Button } from "antd";
+import { useAsync } from "utils/custom-hook";
 
-export const Register = () => {
-  const { register, user } = useAuth();
+export const Register = ({ onError }: { onError: (error: Error) => void }) => {
+  const { register } = useAuth();
+  const { run, isLoading } = useAsync(undefined, { throwOnError: true });
+  const handleSubmit = async ({
+    cpassword,
+    ...values
+  }: {
+    username: string;
+    password: string;
+    cpassword: string;
+  }) => {
+    if (cpassword !== values.password) {
+      return onError(new Error("请确认两次输入的密码相同!"));
+    }
+    run(register(values)).catch(onError);
+  };
 
   return (
-    <Form onFinish={register}>
+    <Form onFinish={handleSubmit}>
       <Form.Item
         name="username"
         rules={[{ required: true, message: "请输入用户名" }]}
@@ -21,7 +36,20 @@ export const Register = () => {
         <Input.Password placeholder="密码" id="password" />
       </Form.Item>
 
-      <Button block htmlType="submit" type="primary">
+      <Form.Item
+        name="cpassword"
+        rules={[{ required: true, message: "请确认密码" }]}
+      >
+        <Input.Password placeholder="请确认密码" id="cpassword" />
+      </Form.Item>
+
+      <Button
+        block
+        loading={isLoading}
+        disabled={isLoading}
+        htmlType="submit"
+        type="primary"
+      >
         注册
       </Button>
     </Form>

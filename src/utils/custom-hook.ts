@@ -50,8 +50,16 @@ const defaultInitialState: State<null> = {
   data: null,
   error: null,
 };
+/** @param {boolean} throwOnError：是否抛出错误 */
+const defaultInitialConfig = {
+  throwOnError: false,
+};
 /* 异步请求 hook */
-export const useAsync = <D>(initialState?: State<D>) => {
+export const useAsync = <D>(
+  initialState?: State<D>,
+  initialConfig?: typeof defaultInitialConfig
+) => {
+  const config = { ...defaultInitialConfig, ...initialConfig };
   const [state, setState] = useState({
     ...defaultInitialState,
     ...initialState,
@@ -80,10 +88,11 @@ export const useAsync = <D>(initialState?: State<D>) => {
     return promise
       .then((data) => {
         setData(data);
-        return data;
+        return Promise.resolve(data);
       })
       .catch((error) => {
         setError(error);
+        if (config.throwOnError) return Promise.reject(error);
         return error;
       });
   };
