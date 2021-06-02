@@ -1,23 +1,36 @@
 import React from "react";
+import { Row } from "components/lib";
 import { ProjectList } from "screens/project-list";
 import { useAuth } from "context/auth-context";
-import { Button } from "antd";
-import { Row } from "components/lib";
+import { Button, Dropdown, Menu } from "antd";
 import styled from "@emotion/styled";
+import { ReactComponent as SoftwareLogo } from "assets/software-logo.svg";
 
 export const AuthenticatedApp = () => {
-  const { logout } = useAuth();
+  const { user, logout } = useAuth();
 
   return (
     <Container>
       <PageHeader between={true}>
         <HeaderLeft gap={true}>
-          <h3>logo</h3>
+          <SoftwareLogo width="15rem" />
           <h3>项目</h3>
           <h3>用户</h3>
         </HeaderLeft>
         <HeaderRight>
-          <Button onClick={() => logout()}>登出</Button>
+          <Dropdown
+            overlay={
+              <Menu>
+                <Menu.Item key="logout">
+                  <Button type="link" onClick={() => logout()}>
+                    登出
+                  </Button>
+                </Menu.Item>
+              </Menu>
+            }
+          >
+            <Button type="link">Hi, {user?.name}</Button>
+          </Dropdown>
         </HeaderRight>
       </PageHeader>
 
@@ -35,7 +48,9 @@ const Container = styled.div`
 `;
 
 const PageHeader = styled(Row)`
+  padding: 3.2rem;
   height: 6rem;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
 `;
 
 const HeaderLeft = styled(Row)``;
