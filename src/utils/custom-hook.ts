@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 /* 挂载 */
 export const useMount = (cb: () => void) => {
@@ -107,4 +107,28 @@ export const useAsync = <D>(
     setError,
     ...state,
   };
+};
+
+/** 修改页面标题
+ * 加载时为旧title,
+ * 加载后为新传入title
+ * @param {boolean} keepOnUnmount: 卸载页面时, 是否丢弃当前title(立即刷新为新title)
+ */
+export const useDocumentTitle = (
+  title: string,
+  keepOnUnmount: boolean = true
+) => {
+  // 使用useRef, oldTitle就不会立即被刷新成新title
+  const oldTitle = useRef(document.title).current;
+  console.log("oldTitle: ", oldTitle);
+
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+
+  useEffect(() => {
+    return () => {
+      if (!keepOnUnmount) document.title = oldTitle;
+    };
+  }, [oldTitle, keepOnUnmount]);
 };

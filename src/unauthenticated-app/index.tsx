@@ -7,8 +7,10 @@ import styled from "@emotion/styled";
 import logo from "assets/logo.svg";
 import left from "assets/left.svg";
 import right from "assets/right.svg";
+import { useDocumentTitle } from "utils/custom-hook";
 
 export const UnauthenticatedApp = () => {
+  useDocumentTitle("请登录/注册");
   const [isRegister, setIsRegister] = useState(true);
   const handleError = (error: Error) => {
     message.error(error.message);

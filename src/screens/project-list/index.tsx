@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { List } from "./list";
 import { SearchPanel } from "./search-panel";
-import { useDebounce } from "../../utils/custom-hook";
+import { useDebounce, useDocumentTitle } from "../../utils/custom-hook";
 import styled from "@emotion/styled";
 import { useProject } from "utils/project";
 import { useUser } from "utils/user";
-import { Button } from "antd";
 
 export const ProjectList = () => {
+  useDocumentTitle("项目列表");
   const [param, setParam] = useState({
     name: "",
     personId: "",
