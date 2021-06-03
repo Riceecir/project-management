@@ -2,7 +2,8 @@ import React, { ReactNode, useState } from "react";
 import * as auth from "auth-provide";
 import { User } from "screens/project-list/search-panel";
 import { http } from "plugins/request";
-import { useMount } from "utils/custom-hook";
+import { useAsync, useMount } from "utils/custom-hook";
+import { FullPageLoading, FullPageError } from "components/lib";
 
 interface AuthForm {
   username: string;
@@ -33,7 +34,15 @@ const AuthContext =
   >(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const {
+    data: user,
+    error,
+    isLoading,
+    isIdle,
+    isError,
+    run,
+    setData: setUser,
+  } = useAsync<User | null>();
 
   const login = (form: AuthForm) => auth.login(form).then(setUser);
   const register = (form: AuthForm) => auth.register(form).then(setUser);
@@ -41,8 +50,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   /* 首次加载设置default user */
   useMount(() => {
-    bootstrapUser().then(setUser);
+    run(bootstrapUser());
   });
+
+  if (isIdle || isLoading) return <FullPageLoading />;
+
+  if (isError) {
+    return <FullPageError error={error} />;
+  }
 
   return (
     <AuthContext.Provider

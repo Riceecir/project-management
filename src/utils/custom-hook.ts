@@ -50,7 +50,7 @@ const defaultInitialState: State<null> = {
   data: null,
   error: null,
 };
-/** @param {boolean} throwOnError：是否抛出错误 */
+/* @param }throwOnError：是否抛出错误 */
 const defaultInitialConfig = {
   throwOnError: false,
 };
