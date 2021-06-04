@@ -14,7 +14,7 @@ export const ProjectScreen = () => {
       <Link to="epic">任务</Link>
 
       <Routes>
-        <Navigate to="/board" />
+        <Navigate to="board" />
         <Route path="/board" element={<BoardScreen />}></Route>
         <Route path="/epic" element={<EpicScreen />}></Route>
       </Routes>
