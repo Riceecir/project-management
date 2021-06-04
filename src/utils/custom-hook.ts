@@ -68,6 +68,8 @@ export const useAsync = <D>(
   });
   /* 提供重新获取数据func, 利用 useState 惰性初始化保存函数 */
   const [retry, setRetry] = useState(() => () => {});
+  /* 组件挂载状态 */
+  const mountedRef = useMountedRef();
 
   const setData = (data: D) =>
     setState({
@@ -103,7 +105,7 @@ export const useAsync = <D>(
     setState({ ...state, stat: "loading" });
     return promise
       .then((data) => {
-        setData(data);
+        if (mountedRef.current) setData(data);
         return Promise.resolve(data);
       })
       .catch((error) => {
@@ -174,4 +176,20 @@ export const useUrlQueryParam = <K extends string>(keys: K[]) => {
     },
     // setSearchParams
   ] as const;
+};
+
+/**
+ * 组件挂载状态
+ */
+export const useMountedRef = () => {
+  const mountedRef = useRef(false);
+
+  useEffect(() => {
+    mountedRef.current = true;
+    return () => {
+      mountedRef.current = false;
+    };
+  });
+
+  return mountedRef;
 };
