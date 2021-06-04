@@ -150,7 +150,7 @@ export const useUrlQueryParam = <K extends string>(keys: K[]) => {
         ),
       [searchParams]
     ),
-    (params: Partial<{ [key in K]: string }>) => {
+    (params: Partial<{ [key in K]: unknown }>) => {
       const obj = cleanObject({
         ...Object.fromEntries(searchParams),
         ...params,

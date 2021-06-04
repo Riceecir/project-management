@@ -16,6 +16,12 @@ interface IdSelectProps
   options?: { name: string; id: number }[];
 }
 
+/**
+ * value 可传入多种类型
+ * onChange 只会回调 number | undefined
+ * 当 Number(value) === NaN 时, 代表选择默认选项
+ * 选择默认选项时，onChage 会回调 undefined
+ */
 export const IdSelect = (props: IdSelectProps) => {
   const { value, onChange, defaultOptionName, options, ...resetProp } = props;
   return (
