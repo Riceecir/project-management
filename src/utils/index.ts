@@ -29,3 +29,5 @@ const debounce = (func: () => void, delay = 300) => {
     }, delay);
   };
 };
+
+export const resetRoute = () => (window.location.href = window.location.origin);

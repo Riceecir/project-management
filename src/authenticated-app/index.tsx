@@ -6,8 +6,9 @@ import { Button, Dropdown, Menu } from "antd";
 import styled from "@emotion/styled";
 import { ReactComponent as SoftwareLogo } from "assets/software-logo.svg";
 import { Navigate, Routes, Route } from "react-router";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router, Link } from "react-router-dom";
 import { ProjectScreen } from "screens/project";
+import { resetRoute } from "utils";
 
 export const AuthenticatedApp = () => {
   return (
@@ -31,7 +32,9 @@ const Header = () => {
   return (
     <PageHeader between={true}>
       <HeaderLeft gap={true}>
-        <SoftwareLogo width="15rem" />
+        <Button type="link" onClick={resetRoute}>
+          <SoftwareLogo width="15rem" />
+        </Button>
         <h3>项目</h3>
         <h3>用户</h3>
       </HeaderLeft>
