@@ -23,6 +23,7 @@ export const List = ({ users, ...props }: ListProps) => {
       columns={[
         {
           title: "名称",
+          key: "name",
           sorter: (a, b) => a.name.localeCompare(b.name),
           render(value, project) {
             return <Link to={`${project.id}`}>{project.name}</Link>;
@@ -30,10 +31,12 @@ export const List = ({ users, ...props }: ListProps) => {
         },
         {
           title: "部门",
+          key: "organization",
           dataIndex: "organization",
         },
         {
           title: "负责人",
+          key: "personId",
           render(value, project) {
             return (
               <span>
@@ -45,6 +48,7 @@ export const List = ({ users, ...props }: ListProps) => {
         },
         {
           title: "创建时间",
+          key: "created",
           render(value, project) {
             return (
               <span>

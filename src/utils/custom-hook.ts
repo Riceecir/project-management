@@ -1,4 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
+import { cleanObject } from "utils";
 
 /* 挂载 */
 export const useMount = (cb: () => void) => {
@@ -120,7 +122,6 @@ export const useDocumentTitle = (
 ) => {
   // 使用useRef, oldTitle就不会立即被刷新成新title
   const oldTitle = useRef(document.title).current;
-  console.log("oldTitle: ", oldTitle);
 
   useEffect(() => {
     document.title = title;
@@ -131,4 +132,31 @@ export const useDocumentTitle = (
       if (!keepOnUnmount) document.title = oldTitle;
     };
   }, [oldTitle, keepOnUnmount]);
+};
+
+/**
+ * 读取url query
+ * URLSearchParams API: https://developer.mozilla.org/zh-CN/docs/Web/API/URLSearchParams
+ */
+export const useUrlQueryParam = <K extends string>(keys: K[]) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  return [
+    useMemo(
+      () =>
+        keys.reduce(
+          (pre, key: K) => ({ ...pre, [key]: searchParams.get(key) || "" }),
+          {} as { [key in K]: string }
+        ),
+      [searchParams]
+    ),
+    (params: Partial<{ [key in K]: string }>) => {
+      const obj = cleanObject({
+        ...Object.fromEntries(searchParams),
+        ...params,
+      }) as URLSearchParamsInit;
+      return setSearchParams(obj);
+    },
+    // setSearchParams
+  ] as const;
 };

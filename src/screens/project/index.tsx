@@ -3,8 +3,10 @@ import { Navigate, Routes, Route } from "react-router";
 import { Link } from "react-router-dom";
 import { BoardScreen } from "screens/board";
 import { EpicScreen } from "screens/epic";
+import { useUrlQueryParam } from "utils/custom-hook";
 
 export const ProjectScreen = () => {
+  useUrlQueryParam(["name"]);
   return (
     <div>
       <h1>Project</h1>
