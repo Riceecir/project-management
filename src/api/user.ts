@@ -1,6 +1,6 @@
 import { User } from "screens/project-list/search-panel";
 import { useHttp } from "plugins/request";
-import { useAsync } from "./custom-hook";
+import { useAsync } from "utils/custom-hook";
 import { useEffect } from "react";
 import { cleanObject } from "utils";
 

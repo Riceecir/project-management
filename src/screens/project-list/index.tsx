@@ -3,8 +3,8 @@ import { List } from "./list";
 import { SearchPanel } from "./search-panel";
 import { useDebounce, useDocumentTitle } from "../../utils/custom-hook";
 import styled from "@emotion/styled";
-import { useProject } from "utils/project";
-import { useUser } from "utils/user";
+import { useProject } from "api/project";
+import { useUser } from "api/user";
 import { useProjectsSearchParams } from "./utils";
 
 export const ProjectList = () => {
