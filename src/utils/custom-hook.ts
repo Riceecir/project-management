@@ -66,6 +66,8 @@ export const useAsync = <D>(
     ...defaultInitialState,
     ...initialState,
   });
+  /* 提供重新获取数据func, 利用 useState 惰性初始化保存函数 */
+  const [retry, setRetry] = useState(() => () => {});
 
   const setData = (data: D) =>
     setState({
@@ -81,10 +83,22 @@ export const useAsync = <D>(
       error,
     });
 
-  const run = (promise: Promise<D>) => {
+  /* runConfig.retry 传入 retry 时调用方法 */
+  const run = (
+    promise: Promise<D>,
+    runConfig?: {
+      retry: () => Promise<D>;
+    }
+  ) => {
     if (!promise || !promise.then) {
       throw new Error("请传入 Promise");
     }
+
+    setRetry(() => () => {
+      if (runConfig?.retry) {
+        run(runConfig.retry(), runConfig);
+      }
+    });
 
     setState({ ...state, stat: "loading" });
     return promise
@@ -105,6 +119,7 @@ export const useAsync = <D>(
     isError: state.stat === "error",
     isSuccess: state.stat === "success",
     run,
+    retry,
     setData,
     setError,
     ...state,

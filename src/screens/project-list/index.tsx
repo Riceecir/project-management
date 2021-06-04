@@ -11,13 +11,23 @@ export const ProjectList = () => {
   useDocumentTitle("项目列表");
   const { data: users } = useUser();
   const [param, setParam] = useProjectsSearchParams();
-  const { isLoading, error, data: list } = useProject(useDebounce(param, 300));
+  const {
+    isLoading,
+    error,
+    data: list,
+    retry,
+  } = useProject(useDebounce(param, 300));
   return (
     <Container>
       <h1>项目列表</h1>
       <SearchPanel param={param} setParam={setParam} users={users || []} />
       {error ? <span>{error}</span> : ""}
-      <List loading={isLoading} dataSource={list || []} users={users || []} />
+      <List
+        refresh={retry}
+        loading={isLoading}
+        dataSource={list || []}
+        users={users || []}
+      />
     </Container>
   );
 };
