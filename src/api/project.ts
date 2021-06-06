@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useHttp } from "plugins/request";
 import { Project } from "screens/project-list/list";
 import { useAsync } from "utils/custom-hook";
@@ -8,12 +8,14 @@ import { cleanObject } from "utils";
 export const useProject = (param?: Partial<Project>) => {
   const http = useHttp();
   const { run, ...reslut } = useAsync<Project[]>();
-  const fetchProjects = () =>
-    http("projects", { data: cleanObject(param || {}) });
+  const fetchProjects = useCallback(
+    () => http("projects", { data: cleanObject(param || {}) }),
+    [http, param]
+  );
 
   useEffect(() => {
     run(fetchProjects(), { retry: fetchProjects });
-  }, [param]);
+  }, [param, run, fetchProjects]);
 
   return reslut;
 };

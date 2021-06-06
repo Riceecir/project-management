@@ -1,6 +1,7 @@
 import * as qs from "qs";
 import * as auth from "auth-provide";
 import { useAuth } from "context/auth-context";
+import { useCallback } from "react";
 const apiUrl = process.env.REACT_APP_API_URL;
 
 /* extends: 继承类型 */
@@ -50,8 +51,11 @@ export const useHttp = () => {
   const { user } = useAuth();
 
   /* Parameters typeof：typescript操作符 */
-  return (...[endpoint, config]: Parameters<typeof http>) =>
-    http(endpoint, { ...config, token: user?.token });
+  return useCallback(
+    (...[endpoint, config]: Parameters<typeof http>) =>
+      http(endpoint, { ...config, token: user?.token }),
+    [user?.token]
+  );
 };
 
 // export const useHttp = (...[endpoint, config]: Parameters<typeof http>) => {

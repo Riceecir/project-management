@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
 import { cleanObject } from "utils";
 
@@ -71,49 +71,59 @@ export const useAsync = <D>(
   /* 组件挂载状态 */
   const mountedRef = useMountedRef();
 
-  const setData = (data: D) =>
-    setState({
-      data,
-      stat: "success",
-      error: null,
-    });
+  const setData = useCallback(
+    (data: D) =>
+      setState({
+        data,
+        stat: "success",
+        error: null,
+      }),
+    []
+  );
 
-  const setError = (error: Error) =>
-    setState({
-      data: null,
-      stat: "error",
-      error,
-    });
+  const setError = useCallback(
+    (error: Error) =>
+      setState({
+        data: null,
+        stat: "error",
+        error,
+      }),
+    []
+  );
 
   /* runConfig.retry 传入 retry 时调用方法 */
-  const run = (
-    promise: Promise<D>,
-    runConfig?: {
-      retry: () => Promise<D>;
-    }
-  ) => {
-    if (!promise || !promise.then) {
-      throw new Error("请传入 Promise");
-    }
-
-    setRetry(() => () => {
-      if (runConfig?.retry) {
-        run(runConfig.retry(), runConfig);
+  const run = useCallback(
+    (
+      promise: Promise<D>,
+      runConfig?: {
+        retry: () => Promise<D>;
       }
-    });
+    ) => {
+      if (!promise || !promise.then) {
+        throw new Error("请传入 Promise");
+      }
 
-    setState({ ...state, stat: "loading" });
-    return promise
-      .then((data) => {
-        if (mountedRef.current) setData(data);
-        return Promise.resolve(data);
-      })
-      .catch((error) => {
-        setError(error);
-        if (config.throwOnError) return Promise.reject(error);
-        return error;
+      setRetry(() => () => {
+        if (runConfig?.retry) {
+          run(runConfig.retry(), runConfig);
+        }
       });
-  };
+
+      setState((preState) => ({ ...preState, stat: "loading" }));
+      // setState({ ...state, stat: "loading" });
+      return promise
+        .then((data) => {
+          if (mountedRef.current) setData(data);
+          return Promise.resolve(data);
+        })
+        .catch((error) => {
+          setError(error);
+          if (config.throwOnError) return Promise.reject(error);
+          return error;
+        });
+    },
+    [config.throwOnError, mountedRef, setData, setError]
+  );
 
   return {
     isIdle: state.stat === "idle",
