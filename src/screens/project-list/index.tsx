@@ -6,8 +6,13 @@ import styled from "@emotion/styled";
 import { useProject } from "api/project";
 import { useUser } from "api/user";
 import { useProjectsSearchParams } from "./utils";
+import { Button, Row } from "antd";
 
-export const ProjectList = () => {
+export const ProjectList = ({
+  setProjectModalOpen,
+}: {
+  setProjectModalOpen: (isBoolean: boolean) => void;
+}) => {
   useDocumentTitle("项目列表");
   const { data: users } = useUser();
   const [param, setParam] = useProjectsSearchParams();
@@ -19,7 +24,10 @@ export const ProjectList = () => {
   } = useProject(useDebounce(param, 300));
   return (
     <Container>
-      <h1>项目列表</h1>
+      <Row justify={"space-between"}>
+        <h1>项目列表</h1>
+        <Button onClick={() => setProjectModalOpen(true)}>创建项目</Button>
+      </Row>
       <SearchPanel param={param} setParam={setParam} users={users || []} />
       {error ? <span>{error}</span> : ""}
       <List
@@ -27,6 +35,7 @@ export const ProjectList = () => {
         loading={isLoading}
         dataSource={list || []}
         users={users || []}
+        setProjectModalOpen={setProjectModalOpen}
       />
     </Container>
   );
