@@ -9,9 +9,9 @@ import { useProjectsSearchParams } from "./utils";
 import { Button, Row } from "antd";
 
 export const ProjectList = ({
-  setProjectModalOpen,
+  createProjectBtn,
 }: {
-  setProjectModalOpen: (isBoolean: boolean) => void;
+  createProjectBtn: JSX.Element;
 }) => {
   useDocumentTitle("项目列表");
   const { data: users } = useUser();
@@ -26,7 +26,7 @@ export const ProjectList = ({
     <Container>
       <Row justify={"space-between"}>
         <h1>项目列表</h1>
-        <Button onClick={() => setProjectModalOpen(true)}>创建项目</Button>
+        {createProjectBtn}
       </Row>
       <SearchPanel param={param} setParam={setParam} users={users || []} />
       {error ? <span>{error}</span> : ""}
@@ -35,7 +35,7 @@ export const ProjectList = ({
         loading={isLoading}
         dataSource={list || []}
         users={users || []}
-        setProjectModalOpen={setProjectModalOpen}
+        createProjectBtn={createProjectBtn}
       />
     </Container>
   );

@@ -14,18 +14,21 @@ import { ProjectPopover } from "components/project-popover";
 
 export const AuthenticatedApp = () => {
   const [projectModalOpen, setProjectModalOpen] = useState(false);
+  const createProjectBtn = (
+    <ButtonNoPadding type={"link"} onClick={() => setProjectModalOpen(true)}>
+      创建项目
+    </ButtonNoPadding>
+  );
   return (
     <Container>
-      <Header setProjectModalOpen={setProjectModalOpen} />
+      <Header createProjectBtn={createProjectBtn} />
       <Main>
         <Router>
           <Routes>
             <Navigate to={"/projects"} />
             <Route
               path={"/projects"}
-              element={
-                <ProjectList setProjectModalOpen={setProjectModalOpen} />
-              }
+              element={<ProjectList createProjectBtn={createProjectBtn} />}
             />
             <Route path={"/projects/:id/*"} element={<ProjectScreen />} />
           </Routes>
@@ -40,19 +43,15 @@ export const AuthenticatedApp = () => {
   );
 };
 
-const Header = ({
-  setProjectModalOpen,
-}: {
-  setProjectModalOpen: (isBoolen: boolean) => void;
-}) => {
+const Header = ({ createProjectBtn }: { createProjectBtn: JSX.Element }) => {
   return (
     <PageHeader between={true}>
       <HeaderLeft gap={true}>
         <ButtonNoPadding type="link" onClick={resetRoute}>
           <SoftwareLogo width="15rem" />
         </ButtonNoPadding>
-        <ProjectPopover setProjectModalOpen={setProjectModalOpen} />
-        <h3>用户</h3>
+        <ProjectPopover createProjectBtn={createProjectBtn} />
+        <span>用户</span>
       </HeaderLeft>
       <HeaderRight>
         <User />

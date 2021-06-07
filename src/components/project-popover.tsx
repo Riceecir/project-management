@@ -2,15 +2,14 @@ import React from "react";
 import { Popover, Typography, List, Divider } from "antd";
 import { useProject } from "api/project";
 import styled from "@emotion/styled";
-import { ButtonNoPadding } from "./lib";
 
 /**
  * header "项目" pop over
  */
 export const ProjectPopover = ({
-  setProjectModalOpen,
+  createProjectBtn,
 }: {
-  setProjectModalOpen: (isBoolen: boolean) => void;
+  createProjectBtn: JSX.Element;
 }) => {
   const { data: projects, isLoading } = useProject();
   const Content = (
@@ -26,9 +25,7 @@ export const ProjectPopover = ({
           ))}
       </List>
       <Divider />
-      <ButtonNoPadding type={"link"} onClick={() => setProjectModalOpen(true)}>
-        创建项目
-      </ButtonNoPadding>
+      {createProjectBtn}
     </ContentContaier>
   );
 
