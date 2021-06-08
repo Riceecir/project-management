@@ -70,6 +70,7 @@ const useSafeDispatch = <T>(dispatch: (...args: T[]) => void) => {
     [dispatch, mountedRef]
   );
 };
+
 /* 异步请求 hook */
 export const useAsync = <D>(
   initialState?: State<D>,
@@ -127,9 +128,9 @@ export const useAsync = <D>(
       });
 
       safeDispatch({ stat: "loading" });
-      // setState({ ...state, stat: "loading" });
       return promise
         .then((data) => {
+          setData(data);
           return Promise.resolve(data);
         })
         .catch((error) => {
@@ -138,7 +139,7 @@ export const useAsync = <D>(
           return error;
         });
     },
-    [config.throwOnError, setData, setError]
+    [config.throwOnError, setData, setError, safeDispatch]
   );
 
   return {
