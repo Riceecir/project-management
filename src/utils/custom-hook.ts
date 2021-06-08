@@ -1,4 +1,11 @@
-import { useState, useEffect, useRef, useMemo, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+  useReducer,
+} from "react";
 import { URLSearchParamsInit, useSearchParams } from "react-router-dom";
 import { cleanObject } from "utils";
 
@@ -56,39 +63,49 @@ const defaultInitialState: State<null> = {
 const defaultInitialConfig = {
   throwOnError: false,
 };
+const useSafeDispatch = <T>(dispatch: (...args: T[]) => void) => {
+  const mountedRef = useMountedRef();
+  return useCallback(
+    (...args: T[]) => (mountedRef.current ? dispatch(...args) : void 0),
+    [dispatch, mountedRef]
+  );
+};
 /* 异步请求 hook */
 export const useAsync = <D>(
   initialState?: State<D>,
   initialConfig?: typeof defaultInitialConfig
 ) => {
   const config = { ...defaultInitialConfig, ...initialConfig };
-  const [state, setState] = useState({
-    ...defaultInitialState,
-    ...initialState,
-  });
+  const [state, dispatch] = useReducer(
+    (state: State<D>, action: Partial<State<D>>) => ({ ...state, ...action }),
+    {
+      ...defaultInitialState,
+      ...initialState,
+    }
+  );
+
+  const safeDispatch = useSafeDispatch(dispatch);
   /* 提供重新获取数据func, 利用 useState 惰性初始化保存函数 */
   const [retry, setRetry] = useState(() => () => {});
-  /* 组件挂载状态 */
-  const mountedRef = useMountedRef();
 
   const setData = useCallback(
     (data: D) =>
-      setState({
+      safeDispatch({
         data,
         stat: "success",
         error: null,
       }),
-    []
+    [safeDispatch]
   );
 
   const setError = useCallback(
     (error: Error) =>
-      setState({
+      safeDispatch({
         data: null,
         stat: "error",
         error,
       }),
-    []
+    [safeDispatch]
   );
 
   /* runConfig.retry 传入 retry 时调用方法 */
@@ -109,11 +126,10 @@ export const useAsync = <D>(
         }
       });
 
-      setState((preState) => ({ ...preState, stat: "loading" }));
+      safeDispatch({ stat: "loading" });
       // setState({ ...state, stat: "loading" });
       return promise
         .then((data) => {
-          if (mountedRef.current) setData(data);
           return Promise.resolve(data);
         })
         .catch((error) => {
@@ -122,7 +138,7 @@ export const useAsync = <D>(
           return error;
         });
     },
-    [config.throwOnError, mountedRef, setData, setError]
+    [config.throwOnError, setData, setError]
   );
 
   return {
@@ -169,14 +185,11 @@ export const useUrlQueryParam = <K extends string>(keys: K[]) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   return [
-    useMemo(
-      () =>
-        keys.reduce(
-          (pre, key: K) => ({ ...pre, [key]: searchParams.get(key) || "" }),
-          {} as { [key in K]: string }
-        ),
-      [searchParams]
-    ),
+    useMemo(() => {
+      return keys.reduce((pre, key: K) => {
+        return { ...pre, [key]: searchParams.get(key) || "" };
+      }, {} as { [key in K]: string });
+    }, [searchParams]),
     (params: Partial<{ [key in K]: unknown }>) => {
       const obj = cleanObject({
         ...Object.fromEntries(searchParams),
@@ -204,26 +217,30 @@ export const useMountedRef = () => {
   return mountedRef;
 };
 
-/* use undo hook */
-export const useUndo = <T>(initialPresent: T) => {
-  /* const [past, setPast] = useState<T[]>([])
-  const [present, setPresent] = useState<T>(initialPresent)
-  const [future, setFuture] = useState<T[]>([]) */
+type undoState<T> = {
+  past: T[];
+  present: T;
+  future: T[];
+};
 
-  /* 互相关联的 state 可以合并成一个 state */
-  const [state, setState] = useState({
-    past: [] as T[],
-    present: initialPresent as T,
-    future: [] as T[],
-  });
+const UNDO = "UNDO";
+const REDO = "REDO";
+const SET = "SET";
+const RESET = "RESET";
 
-  const canUndo = state.past.length > 0;
-  const canRedo = state.future.length > 0;
+type Action<T> = {
+  newPresent?: T;
+  type: typeof UNDO | typeof REDO | typeof SET | typeof RESET;
+};
 
-  const undo = useCallback(() => {
-    setState((currentState) => {
-      const { past, present, future } = currentState;
-      if (past.length === 0) return currentState;
+/* 使用 useReducer 改造 useUndo */
+const undoReducer = <T>(state: undoState<T>, action: Action<T>) => {
+  const { past, present, future } = state;
+  const { newPresent } = action;
+
+  switch (action.type) {
+    case UNDO: {
+      if (past.length === 0) return state;
 
       const previous = past[past.length - 1];
       const newPast = past.slice(0, past.length - 1);
@@ -233,13 +250,9 @@ export const useUndo = <T>(initialPresent: T) => {
         present: previous,
         future: [present, ...future],
       };
-    });
-  }, []);
-
-  const redo = useCallback(() => {
-    setState((currentState) => {
-      const { past, present, future } = currentState;
-      if (future.length === 0) return currentState;
+    }
+    case REDO: {
+      if (future.length === 0) return state;
 
       const next = future[0];
       const newFuture = future.slice(1);
@@ -249,29 +262,61 @@ export const useUndo = <T>(initialPresent: T) => {
         present: next,
         future: newFuture,
       };
-    });
-  }, []);
-
-  const set = useCallback((newPresent: T) => {
-    setState((currentState) => {
-      const { past, present } = currentState;
-      if (newPresent === present) return currentState;
-
+    }
+    case SET: {
+      if (newPresent === present) return state;
       return {
         past: [...past, newPresent],
         present: newPresent,
         future: [],
       };
-    });
-  }, []);
+    }
+    case RESET: {
+      return {
+        past: [],
+        present: newPresent,
+        future: [],
+      };
+    }
+  }
+};
 
-  const reset = useCallback((newPresent: T) => {
-    setState(() => ({
-      past: [],
-      present: newPresent,
-      future: [],
-    }));
-  }, []);
+/* use undo hook */
+export const useUndo = <T>(initialPresent: T) => {
+  /* const [past, setPast] = useState<T[]>([])
+  const [present, setPresent] = useState<T>(initialPresent)
+  const [future, setFuture] = useState<T[]>([]) */
+
+  /* 互相关联的 state 可以合并成一个 state */
+  /* const [state, setState] = useState({
+    past: [] as T[],
+    present: initialPresent as T,
+    future: [] as T[],
+  }); */
+
+  /* 使用 useReducer */
+  const [state, dispatch] = useReducer(undoReducer, {
+    past: [],
+    present: initialPresent,
+    future: [],
+  });
+
+  const canUndo = state.past.length > 0;
+  const canRedo = state.future.length > 0;
+
+  const undo = useCallback(() => dispatch({ type: UNDO }), []);
+
+  const redo = useCallback(() => dispatch({ type: REDO }), []);
+
+  const set = useCallback(
+    (newPresent: T) => dispatch({ type: SET, newPresent }),
+    []
+  );
+
+  const reset = useCallback(
+    (newPresent: T) => dispatch({ type: RESET, newPresent }),
+    []
+  );
 
   return [state, { undo, redo, set, reset, canUndo, canRedo }];
 };
