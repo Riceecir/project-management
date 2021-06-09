@@ -4,18 +4,17 @@ import { SearchPanel } from "./search-panel";
 import { useDebounce, useDocumentTitle } from "../../utils/custom-hook";
 import styled from "@emotion/styled";
 import { useProject } from "api/project";
+import { Button, Row } from "antd";
 import { useUser } from "api/user";
 import { useProjectsSearchParams } from "./utils";
-import { Button, Row } from "antd";
+import { useProjectModal } from "utils/project";
 
-export const ProjectList = ({
-  createProjectBtn,
-}: {
-  createProjectBtn: JSX.Element;
-}) => {
+export const ProjectList = () => {
   useDocumentTitle("项目列表");
   const { data: users } = useUser();
   const [param, setParam] = useProjectsSearchParams();
+  const { open } = useProjectModal();
+
   const {
     isLoading,
     error,
@@ -26,7 +25,7 @@ export const ProjectList = ({
     <Container>
       <Row justify={"space-between"}>
         <h1>项目列表</h1>
-        {createProjectBtn}
+        <Button onClick={open}>创建项目</Button>
       </Row>
       <SearchPanel param={param} setParam={setParam} users={users || []} />
       {error ? <span>{error}</span> : ""}
@@ -35,7 +34,6 @@ export const ProjectList = ({
         loading={isLoading}
         dataSource={list || []}
         users={users || []}
-        createProjectBtn={createProjectBtn}
       />
     </Container>
   );

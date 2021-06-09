@@ -183,23 +183,37 @@ export const useDocumentTitle = (
  * URLSearchParams API: https://developer.mozilla.org/zh-CN/docs/Web/API/URLSearchParams
  */
 export const useUrlQueryParam = <K extends string>(keys: K[]) => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const setSearchParams = useSetUrlQueryParam();
+  const [stateKeys] = useState(keys);
 
   return [
     useMemo(() => {
-      return keys.reduce((pre, key: K) => {
-        return { ...pre, [key]: searchParams.get(key) || "" };
-      }, {} as { [key in K]: string });
-    }, [searchParams]),
-    (params: Partial<{ [key in K]: unknown }>) => {
-      const obj = cleanObject({
-        ...Object.fromEntries(searchParams),
-        ...params,
-      }) as URLSearchParamsInit;
-      return setSearchParams(obj);
-    },
-    // setSearchParams
+      /**
+       * keys: ["a"]
+       * { a: "1", b: "2" } => [["a", "1"], ["b", "2"]] => filtered from keys... => [["a", "1"]] => { a: "1" }
+       */
+      const toArr = Object.entries(Object.fromEntries(searchParams));
+      const filtered = toArr.filter(([key]) => stateKeys.includes(key as K));
+
+      return Object.fromEntries(filtered);
+    }, [searchParams, stateKeys]),
+
+    (params: Partial<{ [key in K]: unknown }>) => setSearchParams(params),
   ] as const;
+};
+
+/** 设置 url query */
+export const useSetUrlQueryParam = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  return (params: { [key in string]: unknown }) => {
+    const obj = cleanObject({
+      ...Object.fromEntries(searchParams),
+      ...params,
+    }) as URLSearchParamsInit;
+    return setSearchParams(obj);
+  };
 };
 
 /**

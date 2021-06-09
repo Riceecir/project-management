@@ -11,7 +11,7 @@ export const useUser = (param?: Partial<User>) => {
 
   useEffect(() => {
     run(http("users", { data: cleanObject(param || {}) }));
-  }, [param]);
+  }, [param, http, run]);
 
   return result;
 };
