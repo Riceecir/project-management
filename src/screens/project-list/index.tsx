@@ -3,11 +3,12 @@ import { List } from "./list";
 import { SearchPanel } from "./search-panel";
 import { useDebounce, useDocumentTitle } from "../../utils/custom-hook";
 import styled from "@emotion/styled";
-import { useProject } from "api/project";
+import { useProjects } from "api/project";
 import { Button, Row } from "antd";
 import { useUser } from "api/user";
 import { useProjectsSearchParams } from "./utils";
 import { useProjectModal } from "utils/project";
+import { ErrorBox } from "components/lib";
 
 export const ProjectList = () => {
   useDocumentTitle("项目列表");
@@ -19,8 +20,8 @@ export const ProjectList = () => {
     isLoading,
     error,
     data: list,
-    retry,
-  } = useProject(useDebounce(param, 300));
+    // retry,
+  } = useProjects(useDebounce(param, 300));
   return (
     <Container>
       <Row justify={"space-between"}>
@@ -28,9 +29,9 @@ export const ProjectList = () => {
         <Button onClick={open}>创建项目</Button>
       </Row>
       <SearchPanel param={param} setParam={setParam} users={users || []} />
-      {error ? <span>{error}</span> : ""}
+      <ErrorBox error={error} />
       <List
-        refresh={retry}
+        // refresh={retry}
         loading={isLoading}
         dataSource={list || []}
         users={users || []}

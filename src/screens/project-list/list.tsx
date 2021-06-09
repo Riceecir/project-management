@@ -24,10 +24,9 @@ interface ListProps extends TableProps<Project> {
 
 export const List = ({ users, refresh, ...props }: ListProps) => {
   const { mutate } = useEditProject();
-  const handlePin = (id: number, pin: boolean) => {
-    mutate({ id, pin }).then(() => refresh?.());
-  };
-  const { open } = useProjectModal();
+  const { edit } = useProjectModal();
+  const pinProject = (id: number, pin: boolean) => mutate({ id, pin });
+  const editProject = (id: number) => edit(id);
 
   return (
     <Table
@@ -39,7 +38,7 @@ export const List = ({ users, refresh, ...props }: ListProps) => {
             return (
               <Pin
                 checked={project.pin}
-                onCheckedChange={(pin) => handlePin(project.id, pin)}
+                onCheckedChange={(pin) => pinProject(project.id, pin)}
               />
             );
           },
@@ -89,9 +88,19 @@ export const List = ({ users, refresh, ...props }: ListProps) => {
                 overlay={
                   <Menu>
                     <Menu.Item key={"edit"}>
-                      <ButtonNoPadding type={"link"} onClick={open}>
-                        编辑
-                      </ButtonNoPadding>
+                      <Button
+                        type={"link"}
+                        onClick={() => editProject(project.id)}
+                      >
+                        {" "}
+                        编辑{" "}
+                      </Button>
+                    </Menu.Item>
+                    <Menu.Item key={"delete"}>
+                      <Button type={"link"} danger>
+                        {" "}
+                        删除{" "}
+                      </Button>
                     </Menu.Item>
                   </Menu>
                 }
@@ -105,4 +114,9 @@ export const List = ({ users, refresh, ...props }: ListProps) => {
       {...props}
     />
   );
+};
+
+/* 更多操作 */
+const More = () => {
+  return null;
 };

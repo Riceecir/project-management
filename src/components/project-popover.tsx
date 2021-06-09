@@ -1,6 +1,6 @@
 import React from "react";
 import { Popover, Typography, List, Divider } from "antd";
-import { useProject } from "api/project";
+import { useProjects } from "api/project";
 import styled from "@emotion/styled";
 import { ButtonNoPadding } from "./lib";
 import { useProjectModal } from "utils/project";
@@ -9,7 +9,7 @@ import { useProjectModal } from "utils/project";
  * header "项目" pop over
  */
 export const ProjectPopover = () => {
-  const { data: projects, isLoading } = useProject();
+  const { data: projects, isLoading } = useProjects();
   const { open } = useProjectModal();
 
   const Content = (

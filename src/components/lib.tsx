@@ -48,9 +48,20 @@ export const FullPageLoading = () => (
 export const FullPageError = ({ error }: { error: Error | null }) => (
   <FullPage>
     <DevTools />
-    <Typography.Text type="danger">{error?.message}</Typography.Text>
+    <ErrorBox error={error} />
   </FullPage>
 );
+
+/**
+ * 包含检测数据类型的错误信息组件
+ */
+// 类型守卫:
+const isError = (value: any): value is Error => value?.message;
+export const ErrorBox = ({ error }: { error: unknown }) => {
+  if (isError(error))
+    return <Typography.Text type="danger">{error?.message}</Typography.Text>;
+  return null;
+};
 
 /** 无padding <Button> */
 export const ButtonNoPadding = styled(Button)`

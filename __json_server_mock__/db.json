@@ -23,7 +23,8 @@
       "name": "骑手管理",
       "personId": 1,
       "organization": "外卖组",
-      "created": 1604989757139
+      "created": 1604989757139,
+      "pin": true
     },
     {
       "id": 2,
