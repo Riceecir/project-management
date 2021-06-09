@@ -3,12 +3,20 @@ import { useHttp } from "plugins/request";
 import { Project } from "screens/project-list/list";
 import { useAsync } from "utils/custom-hook";
 import { cleanObject } from "utils";
-import { useQuery, useQueryClient, useMutation } from "react-query";
-import { useProjectsSearchParams } from "screens/project-list/utils";
+import { useQuery, useQueryClient, useMutation, QueryKey } from "react-query";
+import {
+  useEditConfig,
+  useAddConfig,
+  useDeleteConfig,
+} from "utils/use-optimistic-option";
 
 /* project 列表 */
 export const useProjects = (param?: Partial<Project>) => {
   const http = useHttp();
+
+  return useQuery<Project[]>(["projects", cleanObject(param)], () =>
+    http("projects", { data: param })
+  );
   /* const { run, ...reslut } = useAsync<Project[]>();
   const fetchProjects = useCallback(
     () => http("projects", { data: cleanObject(param || {}) }),
@@ -20,14 +28,18 @@ export const useProjects = (param?: Partial<Project>) => {
   }, [param, run, fetchProjects]);
 
   return reslut; */
-  return useQuery<Project[]>(["projects", cleanObject(param)], () =>
-    http("projects", { data: param })
-  );
 };
 
 /* 更改项目信息 */
-export const useEditProject = () => {
+export const useEditProject = (queryKey: QueryKey) => {
   const http = useHttp();
+
+  return useMutation(
+    (params: Partial<Project>) =>
+      http(`projects/${params.id}`, { data: params, method: "PATCH" }),
+    useEditConfig(queryKey)
+  );
+
   /* const { run, ...asyncResult } = useAsync();
   const mutate = (params: Partial<Project>) => {
     return run(
@@ -42,46 +54,14 @@ export const useEditProject = () => {
     mutate,
     ...asyncResult,
   }; */
-  const queryClient = useQueryClient();
-  const [searchParams] = useProjectsSearchParams();
-  /* useQuery 传入的 key 和 参数 */
-  const queryKey = ["projects", searchParams];
-
-  return useMutation(
-    (params: Partial<Project>) =>
-      http(`projects/${params.id}`, { data: params, method: "PATCH" }),
-    {
-      onSuccess: () => queryClient.invalidateQueries("projects"),
-      onMutate: async (targe) => {
-        /* 获取缓存数据 */
-        const previousItems = queryClient.getQueryData(queryKey);
-        /* 设置修改后的数据 */
-        queryClient.setQueryData(queryKey, (old?: Project[]) => {
-          return (
-            old?.map((project) => {
-              return project.id === targe.id
-                ? { ...project, ...targe }
-                : project;
-            }) || []
-          ); // 如果 old 传入非 Array 返回一个空数据
-        });
-
-        /* return 的值可以在 onError 第三个参数(context)取得 */
-        return { previousItems };
-      },
-      onError: (error, newItem, ctx) => {
-        queryClient.setQueryData(
-          queryKey,
-          (ctx as { previousItems: Project[] }).previousItems
-        );
-      },
-    }
-  );
 };
 
 /* 添加项目 */
-export const useAddProject = () => {
+export const useAddProject = (queryKey: QueryKey) => {
   const http = useHttp();
+  return useMutation((params: Partial<Project>) => {
+    return http("projects", { data: params, method: "POST" });
+  }, useAddConfig(queryKey));
   /* const { run, ...asyncResult } = useAsync();
   const mutate = (params: Partial<Project>) => {
     return run(
@@ -96,14 +76,14 @@ export const useAddProject = () => {
     mutate,
     ...asyncResult,
   }; */
-  const queryClient = useQueryClient();
-  return useMutation(
-    (params: Partial<Project>) =>
-      http("projects", { data: params, method: "POST" }),
-    {
-      onSuccess: () => queryClient.invalidateQueries("projects"),
-    }
-  );
+};
+
+/* 删除项目 */
+export const useDeleteProject = (queryKey: QueryKey) => {
+  const http = useHttp();
+  return useMutation(({ id }: { id: number }) => {
+    return http(`projects/${id}`, { method: "DELETE" });
+  }, useDeleteConfig(queryKey));
 };
 
 /* 查询project详情 */

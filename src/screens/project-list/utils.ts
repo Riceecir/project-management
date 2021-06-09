@@ -11,3 +11,9 @@ export const useProjectsSearchParams = () => {
     setParam,
   ] as const;
 };
+
+/* 乐观更新 query key */
+export const useProjectsQueryKey = () => {
+  const [searchParams] = useProjectsSearchParams();
+  return ["projects", searchParams];
+};

@@ -10,7 +10,7 @@ export const useUser = (param?: Partial<User>) => {
   const { run, ...result } = useAsync<User[]>();
 
   useEffect(() => {
-    run(http("users", { data: cleanObject(param || {}) }));
+    run(http("users", { data: cleanObject(param) }));
   }, [param, http, run]);
 
   return result;

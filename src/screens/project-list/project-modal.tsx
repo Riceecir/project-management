@@ -6,6 +6,7 @@ import { useUser } from "api/user";
 import { useAddProject, useEditProject } from "api/project";
 import { ErrorBox } from "components/lib";
 import styled from "@emotion/styled";
+import { useProjectsQueryKey } from "./utils";
 
 const formItemLayout = {
   // labelCol: { span: 6 },
@@ -19,7 +20,11 @@ export const ProjectModal = () => {
   const useMutateProject = editingProject ? useEditProject : useAddProject;
 
   const [form] = Form.useForm();
-  const { mutateAsync, error, isLoading: mutateLoading } = useMutateProject();
+  const {
+    mutateAsync,
+    error,
+    isLoading: mutateLoading,
+  } = useMutateProject(useProjectsQueryKey());
   const onFinish = (values: {
     name: string;
     organization: string;
