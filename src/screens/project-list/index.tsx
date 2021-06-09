@@ -22,6 +22,7 @@ export const ProjectList = () => {
     data: list,
     // retry,
   } = useProjects(useDebounce(param, 300));
+
   return (
     <Container>
       <Row justify={"space-between"}>

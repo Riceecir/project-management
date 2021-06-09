@@ -25,7 +25,6 @@ export const ProjectModal = () => {
     organization: string;
     personId: number;
   }) => {
-    console.log(values);
     /* 传入old and new data，新数据覆盖旧数据 */
     mutateAsync({ ...editingProject, ...values }).then(() => {
       form.resetFields();
