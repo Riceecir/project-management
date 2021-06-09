@@ -4,6 +4,7 @@ import { User } from "screens/project-list/search-panel";
 import { http } from "plugins/request";
 import { useAsync, useMount } from "utils/custom-hook";
 import { FullPageLoading, FullPageError } from "components/lib";
+import { useQueryClient } from "react-query";
 
 interface AuthForm {
   username: string;
@@ -44,9 +45,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setData: setUser,
   } = useAsync<User | null>();
 
+  const queryClient = useQueryClient();
+
   const login = (form: AuthForm) => auth.login(form).then(setUser);
   const register = (form: AuthForm) => auth.register(form).then(setUser);
-  const logout = () => auth.logout().then(() => setUser(null));
+  const logout = () =>
+    auth.logout().then(() => {
+      setUser(null);
+      queryClient.clear();
+    });
 
   /* 首次加载设置default user */
   useMount(() => {

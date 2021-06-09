@@ -37,9 +37,10 @@ export const ProjectModal = () => {
     });
   };
 
-  /* 设置默认值 (只有在编辑时) */
+  /* 设置默认值 (只有在编辑时), 卸载组件则重置表单 */
   useEffect(() => {
     form.setFieldsValue(editingProject);
+    return form.resetFields;
   }, [editingProject, form]);
 
   const title = editingProject ? "编辑项目" : "创建项目";
