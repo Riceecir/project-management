@@ -3,7 +3,7 @@ import { useHttp } from "plugins/request";
 import { Project } from "screens/project-list/list";
 import { useAsync } from "utils/custom-hook";
 import { cleanObject } from "utils";
-import { useQuery, useQueryClient, useMutation, QueryKey } from "react-query";
+import { useQuery, useMutation, QueryKey } from "react-query";
 import {
   useEditConfig,
   useAddConfig,
