@@ -6,7 +6,7 @@ import {
   useAddConfig,
   useDeleteConfig,
 } from "utils/use-optimistic-option";
-import { Project } from "types";
+import { Project } from "types/project";
 
 /* project 列表 */
 export const useProjects = (param?: Partial<Project>) => {

@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from "react";
 import * as auth from "auth-provide";
-import { User } from "types";
+import { User } from "types/user";
 import { http } from "plugins/request";
 import { useAsync, useMount } from "utils/custom-hook";
 import { FullPageLoading, FullPageError } from "components/lib";

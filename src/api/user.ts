@@ -3,7 +3,7 @@ import { useAsync } from "utils/custom-hook";
 import { useEffect } from "react";
 import { cleanObject } from "utils";
 import { useQuery } from "react-query";
-import { User } from "types";
+import { User } from "types/user";
 
 /* 获取负责人列表 */
 export const useUser = (param?: Partial<User>) => {

@@ -1,7 +1,8 @@
 import React from "react";
 import { Form, Input } from "antd";
 import { IdSelect } from "components/id-select";
-import { Project, User } from "types";
+import { User } from "types/user";
+import { Project } from "types/project";
 
 interface SearchPanelProps {
   users: User[];
