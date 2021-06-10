@@ -1,9 +1,9 @@
-import { User } from "screens/project-list/search-panel";
 import { useHttp } from "plugins/request";
 import { useAsync } from "utils/custom-hook";
 import { useEffect } from "react";
 import { cleanObject } from "utils";
 import { useQuery } from "react-query";
+import { User } from "types";
 
 /* 获取负责人列表 */
 export const useUser = (param?: Partial<User>) => {

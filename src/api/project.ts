@@ -1,7 +1,4 @@
-import { useCallback, useEffect } from "react";
 import { useHttp } from "plugins/request";
-import { Project } from "screens/project-list/list";
-import { useAsync } from "utils/custom-hook";
 import { cleanObject } from "utils";
 import { useQuery, useMutation, QueryKey } from "react-query";
 import {
@@ -9,6 +6,7 @@ import {
   useAddConfig,
   useDeleteConfig,
 } from "utils/use-optimistic-option";
+import { Project } from "types";
 
 /* project 列表 */
 export const useProjects = (param?: Partial<Project>) => {
