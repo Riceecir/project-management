@@ -74,8 +74,10 @@ const Container = styled.div`
 `;
 
 const PageHeader = styled(Row)`
+  z-index: 1;
   padding: 3.2rem;
   height: 6rem;
+  background-color: white;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.1);
 `;
 
@@ -85,4 +87,6 @@ const HeaderRight = styled.div``;
 
 const Main = styled.main`
   height: calc(100vh - 6rem);
+  display: flex;
+  overflow: hidden;
 `;

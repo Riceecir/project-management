@@ -8,7 +8,7 @@ import { Button, Row } from "antd";
 import { useUser } from "api/user";
 import { useProjectsSearchParams } from "./utils";
 import { useProjectModal } from "utils/project";
-import { ErrorBox } from "components/lib";
+import { ErrorBox, ScreenContainer } from "components/lib";
 
 export const ProjectList = () => {
   useDocumentTitle("项目列表");
@@ -24,7 +24,7 @@ export const ProjectList = () => {
   } = useProjects(useDebounce(param, 300));
 
   return (
-    <Container>
+    <ScreenContainer>
       <Row justify={"space-between"}>
         <h1>项目列表</h1>
         <Button onClick={open}>创建项目</Button>
@@ -37,10 +37,6 @@ export const ProjectList = () => {
         dataSource={list || []}
         users={users || []}
       />
-    </Container>
+    </ScreenContainer>
   );
 };
-
-const Container = styled.div`
-  padding: 3.2rem;
-`;

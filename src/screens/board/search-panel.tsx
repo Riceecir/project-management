@@ -33,7 +33,7 @@ export const SearchPanel = () => {
       />
 
       <IdSelect
-        defaultOptionName={"负责人"}
+        defaultOptionName={"经办人"}
         value={searchParams.processorId}
         options={users || []}
         onChange={(value) => setSearchParams({ processorId: value })}

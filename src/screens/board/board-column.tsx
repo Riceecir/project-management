@@ -1,20 +1,21 @@
-import { useTasks, useTaskTypes } from "api/task";
+import { useEditTask, useTasks, useTaskTypes } from "api/task";
 import React from "react";
 import { Board } from "types/board";
-import { useTasksSearchParams } from "./util";
+import { useBoardQueryKey, useTaskModal, useTasksSearchParams } from "./util";
 import taskIcon from "assets/bug.svg";
 import bugIcon from "assets/task.svg";
 import styled from "@emotion/styled";
-import { Card, Row } from "antd";
-/* import { ReactComponent as TaskIcon } from 'assets/bug.svg'
-import { ReactComponent as BugIcon } from 'assets/task.svg' */
+import { Button, Card, Dropdown, Menu, Modal, Row } from "antd";
+import { CreateTask } from "./create-task";
+import { Mark } from "components/mark";
+import { Task } from "types/task";
+import { useDeleteBoard } from "api/board";
 
 const TaskTypeIcon = ({ id }: { id: number }) => {
   const { data: taskTypes } = useTaskTypes();
   const name = taskTypes?.find((taskType) => taskType.id === id)?.name;
 
   if (!name) return null;
-  // return (name === 'task' ? <TaskIcon /> : <BugIcon />)
   return <img src={name === "task" ? taskIcon : bugIcon} alt="" />;
 };
 
@@ -24,22 +25,69 @@ export const BoardColumn = ({ board }: { board: Board }) => {
 
   return (
     <Container>
-      <h3>{board.name}</h3>
+      <Row align={"middle"} justify={"space-between"}>
+        <h3>{board.name}</h3>
+        <More board={board} />
+      </Row>
       <TaskContainer>
         {tasks?.map((task) => (
-          <Card key={task.id} style={{ marginBottom: ".5rem" }}>
-            <Row align={"middle"}>
-              <span>{task.name}</span>
-              <TaskTypeIcon id={task.id} />
-            </Row>
-          </Card>
+          <TaskCard task={task} />
         ))}
+        <CreateTask kanbanId={board.id} />
       </TaskContainer>
     </Container>
   );
 };
 
-const Container = styled.div`
+const TaskCard = ({ task }: { task: Task }) => {
+  const { edit } = useTaskModal();
+  const { name } = useTasksSearchParams();
+  return (
+    <Card
+      key={task.id}
+      style={{ marginBottom: ".5rem", cursor: "pointer" }}
+      onClick={() => edit(task.id)}
+    >
+      <Row align={"middle"}>
+        <Mark str={task.name} keyword={name}></Mark>
+        <TaskTypeIcon id={task.typeId} />
+      </Row>
+    </Card>
+  );
+};
+
+/* 更多功能小组件 */
+const More = ({ board }: { board: Board }) => {
+  const { mutateAsync: deleteBoard } = useDeleteBoard(useBoardQueryKey());
+  const handleDelete = () => {
+    Modal.confirm({
+      okText: "确认",
+      cancelText: "取消",
+      title: `确定删除${board.name}看板吗?`,
+      onOk() {
+        return deleteBoard({ id: board.id });
+      },
+    });
+  };
+
+  const overlay = (
+    <Menu>
+      <Menu.Item key={"delete"}>
+        <Button type="link" danger onClick={handleDelete}>
+          删除
+        </Button>
+      </Menu.Item>
+    </Menu>
+  );
+
+  return (
+    <Dropdown overlay={overlay}>
+      <Button type={"link"}>...</Button>
+    </Dropdown>
+  );
+};
+
+export const Container = styled.div`
   display: flex;
   flex-direction: column;
   min-width: 27rem;

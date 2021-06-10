@@ -1,13 +1,30 @@
 import { useHttp } from "plugins/request";
-import { useQuery } from "react-query";
+import { QueryKey, useMutation, useQuery } from "react-query";
 import { Board } from "types/board";
 import { cleanObject } from "utils";
+import { useAddConfig, useDeleteConfig } from "utils/use-optimistic-option";
 
 /* project 列表 */
 export const useBoards = (param?: Partial<Board>) => {
   const http = useHttp();
 
-  return useQuery<Board[]>(["kanbans", cleanObject(param)], () =>
+  return useQuery<Board[]>(["boards", cleanObject(param)], () =>
     http("kanbans", { data: param })
   );
+};
+
+/* 添加看板 */
+export const useAddBoard = (queryKey: QueryKey) => {
+  const http = useHttp();
+  return useMutation((params: Partial<Board>) => {
+    return http("kanbans", { data: params, method: "POST" });
+  }, useAddConfig(queryKey));
+};
+
+/* 删除看板 */
+export const useDeleteBoard = (queryKey: QueryKey) => {
+  const http = useHttp();
+  return useMutation(({ id }: { id: number }) => {
+    return http(`kanbans/${id}`, { method: "DELETE" });
+  }, useDeleteConfig(queryKey));
 };
