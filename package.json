@@ -27,6 +27,8 @@
     "test": "craco test",
     "eject": "react-scripts eject",
     "json-server": "json-server __json_server_mock__/db.json --watch --port 2999 --middlewares ./__json_server_mock__/middleware.js",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build -r git@github.com:Riceecir/riceecir.github.io.git -b main",
     "prepare": "husky install"
   },
   "eslintConfig": {
