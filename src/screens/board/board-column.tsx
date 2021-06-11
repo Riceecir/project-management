@@ -10,6 +10,7 @@ import { CreateTask } from "./create-task";
 import { Mark } from "components/mark";
 import { Task } from "types/task";
 import { useDeleteBoard } from "api/board";
+import { Drag, Drop, DropChild } from "components/drag-and-drop";
 
 const TaskTypeIcon = ({ id }: { id: number }) => {
   const { data: taskTypes } = useTaskTypes();
@@ -19,25 +20,43 @@ const TaskTypeIcon = ({ id }: { id: number }) => {
   return <img src={name === "task" ? taskIcon : bugIcon} alt="" />;
 };
 
-export const BoardColumn = ({ board }: { board: Board }) => {
-  const { data: allTasks } = useTasks(useTasksSearchParams());
-  const tasks = allTasks?.filter((item) => item.kanbanId === board.id);
+export const BoardColumn = React.forwardRef<HTMLDivElement, { board: Board }>(
+  ({ board, ...props }, ref) => {
+    const { data: allTasks } = useTasks(useTasksSearchParams());
+    const tasks = allTasks?.filter((item) => item.kanbanId === board.id);
 
-  return (
-    <Container>
-      <Row align={"middle"} justify={"space-between"}>
-        <h3>{board.name}</h3>
-        <More board={board} />
-      </Row>
-      <TaskContainer>
-        {tasks?.map((task) => (
-          <TaskCard task={task} />
-        ))}
-        <CreateTask kanbanId={board.id} />
-      </TaskContainer>
-    </Container>
-  );
-};
+    return (
+      <Container ref={ref} {...props}>
+        <Row align={"middle"} justify={"space-between"}>
+          <h3>{board.name}</h3>
+          <More board={board} />
+        </Row>
+        <TaskContainer>
+          <Drop
+            type={"ROW"}
+            direction={"vertical"}
+            droppableId={String(board.id)}
+          >
+            <DropChild style={{ minHeight: ".5rem" }}>
+              {tasks?.map((task, index) => (
+                <Drag
+                  draggableId={"task" + task.id}
+                  key={task.id}
+                  index={index}
+                >
+                  <div>
+                    <TaskCard key={task.id} task={task} />
+                  </div>
+                </Drag>
+              ))}
+            </DropChild>
+          </Drop>
+          <CreateTask kanbanId={board.id} />
+        </TaskContainer>
+      </Container>
+    );
+  }
+);
 
 const TaskCard = ({ task }: { task: Task }) => {
   const { edit } = useTaskModal();

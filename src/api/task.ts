@@ -1,5 +1,6 @@
 import { useHttp } from "plugins/request";
 import { QueryKey, useMutation, useQuery } from "react-query";
+import { SortProps } from "types";
 import { Task, TaskType } from "types/task";
 import { cleanObject } from "utils";
 import { useDebounce } from "utils/custom-hook";
@@ -7,6 +8,8 @@ import {
   useAddConfig,
   useDeleteConfig,
   useEditConfig,
+  useReorderConfig,
+  useReorderTaskConfig,
 } from "utils/use-optimistic-option";
 
 /* task 列表 */
@@ -63,4 +66,15 @@ export const useTaskTypes = () => {
   const http = useHttp();
 
   return useQuery<TaskType[]>(["taskTypes"], () => http("taskTypes"));
+};
+
+/* 排序 */
+export const useReorderTask = (queryKey: QueryKey) => {
+  const client = useHttp();
+  return useMutation((params: SortProps) => {
+    return client("tasks/reorder", {
+      data: params,
+      method: "POST",
+    });
+  }, useReorderTaskConfig(queryKey));
 };

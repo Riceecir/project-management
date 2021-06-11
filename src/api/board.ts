@@ -1,8 +1,14 @@
 import { useHttp } from "plugins/request";
 import { QueryKey, useMutation, useQuery } from "react-query";
+import { SortProps } from "types";
 import { Board } from "types/board";
 import { cleanObject } from "utils";
-import { useAddConfig, useDeleteConfig } from "utils/use-optimistic-option";
+import {
+  useAddConfig,
+  useDeleteConfig,
+  useReorderBoardConfig,
+  useReorderConfig,
+} from "utils/use-optimistic-option";
 
 /* project 列表 */
 export const useBoards = (param?: Partial<Board>) => {
@@ -27,4 +33,16 @@ export const useDeleteBoard = (queryKey: QueryKey) => {
   return useMutation(({ id }: { id: number }) => {
     return http(`kanbans/${id}`, { method: "DELETE" });
   }, useDeleteConfig(queryKey));
+};
+
+/* 排序看板 */
+export const useReorderBoard = (queryKey: QueryKey) => {
+  const http = useHttp();
+
+  return useMutation((params: SortProps) => {
+    return http("kanbans/reorder", {
+      data: params,
+      method: "POST",
+    });
+  }, useReorderBoardConfig(queryKey));
 };

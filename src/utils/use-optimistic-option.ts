@@ -1,4 +1,6 @@
 import { useQueryClient, QueryKey } from "react-query";
+import { Task } from "types/task";
+import { reorder } from "./reorder";
 
 /* 乐观更新配置项 */
 export const useConfig = (
@@ -50,3 +52,23 @@ export const useAddConfig = (queryKey: QueryKey) => {
     return old ? [...old, target] : [];
   });
 };
+
+/* reorder: 排序 */
+export const useReorderConfig = (queryKey: QueryKey) => {
+  return useConfig(queryKey, (target: any, old?: any[]) => old || []);
+};
+
+/* 看板排序乐观更新 */
+export const useReorderBoardConfig = (queryKey: QueryKey) =>
+  useConfig(queryKey, (target, old) => reorder({ list: old, ...target }));
+
+/* 任务排序 */
+export const useReorderTaskConfig = (queryKey: QueryKey) =>
+  useConfig(queryKey, (target, old) => {
+    const orderedList = reorder({ list: old, ...target }) as Task[];
+    return orderedList.map((item) =>
+      item.id === target.fromId
+        ? { ...item, kanbanId: target.toKanbanId }
+        : item
+    );
+  });
