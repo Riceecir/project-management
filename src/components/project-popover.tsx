@@ -9,7 +9,7 @@ import { useProjectModal } from "utils/project";
  * header "项目" pop over
  */
 export const ProjectPopover = () => {
-  const { data: projects, isLoading } = useProjects();
+  const { data: projects, refetch } = useProjects();
   const { open } = useProjectModal();
 
   const Content = (
@@ -32,7 +32,11 @@ export const ProjectPopover = () => {
   );
 
   return (
-    <Popover placement={"bottom"} content={Content}>
+    <Popover
+      placement={"bottom"}
+      content={Content}
+      onVisibleChange={() => refetch}
+    >
       <span>项目</span>
     </Popover>
   );
