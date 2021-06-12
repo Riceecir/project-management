@@ -15,7 +15,6 @@ function App() {
   return (
     <div className="App">
       <ErrorBoundary fallbackRender={FullPageError}>
-        {/* <React.Suspense fallback={(<div>loading...</div>)}> */}
         <React.Suspense fallback={<div></div>}>
           {user ? <AuthenticatedApp /> : <UnauthenticatedApp />}
         </React.Suspense>

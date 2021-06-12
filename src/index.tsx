@@ -11,7 +11,7 @@ loadServer(() => {
   ReactDOM.render(
     <React.StrictMode>
       <AppProvider>
-        <DevTools />
+        {process.env.NODE_ENV === "development" && <DevTools />}
         <Profiler id={"root app"} phases={["mount", "update"]}>
           <App />
         </Profiler>
