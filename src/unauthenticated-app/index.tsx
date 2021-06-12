@@ -51,7 +51,7 @@ const Title = styled.h2`
 `;
 
 const Header = styled.div`
-  padding: 5rem 0;
+  padding: 8rem 0;
   background: url(${logo}) no-repeat center;
   background-size: 10rem;
   width: 100%;
