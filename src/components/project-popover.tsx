@@ -19,7 +19,7 @@ export const ProjectPopover = () => {
         {projects
           ?.filter((item) => item.pin)
           .map((item) => (
-            <List.Item>
+            <List.Item key={item.id}>
               <List.Item.Meta title={item.name} />
             </List.Item>
           ))}

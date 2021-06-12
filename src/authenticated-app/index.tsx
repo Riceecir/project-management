@@ -39,7 +39,7 @@ const Header = () => {
     <PageHeader between={true}>
       <HeaderLeft gap={true}>
         <ButtonNoPadding type="link" onClick={resetRoute}>
-          <SoftwareLogo width="15rem" height="auto" />
+          <SoftwareLogo width="15rem" height={"100%"} />
         </ButtonNoPadding>
         <ProjectPopover />
         <UserPopover />
