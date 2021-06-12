@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { CreateEpic } from "./create-epic";
 import { Epic } from "types/epic";
 
-export const EpicScreen = () => {
+const EpicScreen = () => {
   useDocumentTitle("任务组");
   const { data: currentProject } = useProjectInUrl();
   const { data: epics } = useEpics(useEpicsSearchParams());
@@ -87,3 +87,5 @@ export const EpicScreen = () => {
     </ScreenContainer>
   );
 };
+
+export default EpicScreen;

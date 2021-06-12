@@ -24,7 +24,7 @@ import {
 } from "react-beautiful-dnd";
 import { Drag, Drop, DropChild } from "components/drag-and-drop";
 
-export const BoardScreen = () => {
+const BoardScreen = () => {
   useDocumentTitle("看板列表");
   const { data: currentProject } = useProjectInUrl();
   const { data: boards, isLoading: boardIsLoading } = useBoards(
@@ -93,6 +93,8 @@ export const BoardScreen = () => {
     </ScreenContainer>
   );
 };
+
+export default BoardScreen;
 
 /* 拖拽完成 */
 const useDragEnd = () => {

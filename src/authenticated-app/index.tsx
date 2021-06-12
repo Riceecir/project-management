@@ -1,19 +1,20 @@
 import React, { useState } from "react";
 import { ButtonNoPadding, Row } from "components/lib";
-import { ProjectList } from "screens/project-list";
 import { useAuth } from "context/auth-context";
 import { Button, Dropdown, Menu } from "antd";
 import styled from "@emotion/styled";
 import { ReactComponent as SoftwareLogo } from "assets/software-logo.svg";
 import { Navigate, Routes, Route } from "react-router";
 import { BrowserRouter as Router } from "react-router-dom";
-import { ProjectScreen } from "screens/project";
 import { resetRoute } from "utils";
 import { ProjectModal } from "screens/project-list/project-modal";
 import { ProjectPopover } from "components/project-popover";
 import { UserPopover } from "components/user-popover";
 
-export const AuthenticatedApp = () => {
+const ProjectList = React.lazy(() => import("screens/project-list"));
+const ProjectScreen = React.lazy(() => import("screens/project"));
+
+const AuthenticatedApp = () => {
   return (
     <Container>
       <Router>
@@ -30,6 +31,8 @@ export const AuthenticatedApp = () => {
     </Container>
   );
 };
+
+export default AuthenticatedApp;
 
 const Header = () => {
   return (

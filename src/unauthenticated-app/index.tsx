@@ -9,7 +9,7 @@ import left from "assets/left.svg";
 import right from "assets/right.svg";
 import { useDocumentTitle } from "utils/custom-hook";
 
-export const UnauthenticatedApp = () => {
+const UnauthenticatedApp = () => {
   useDocumentTitle("请登录/注册");
   const [isRegister, setIsRegister] = useState(true);
   const handleError = (error: Error) => {
@@ -34,6 +34,8 @@ export const UnauthenticatedApp = () => {
     </Container>
   );
 };
+
+export default UnauthenticatedApp;
 
 const cardWidth = "40rem";
 

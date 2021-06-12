@@ -10,7 +10,7 @@ import { useProjectsSearchParams } from "./utils";
 import { useProjectModal } from "utils/project";
 import { ErrorBox, ScreenContainer } from "components/lib";
 
-export const ProjectList = () => {
+const ProjectList = () => {
   useDocumentTitle("项目列表");
   const { data: users } = useUser();
   const [param, setParam] = useProjectsSearchParams();
@@ -40,3 +40,5 @@ export const ProjectList = () => {
     </ScreenContainer>
   );
 };
+
+export default ProjectList;

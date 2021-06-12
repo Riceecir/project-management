@@ -1,11 +1,12 @@
 import React from "react";
 import { Navigate, Routes, Route, useLocation } from "react-router";
 import { Link } from "react-router-dom";
-import { BoardScreen } from "screens/board";
-import { EpicScreen } from "screens/epic";
 import { useUrlQueryParam } from "utils/custom-hook";
 import styled from "@emotion/styled";
 import { Menu } from "antd";
+
+const BoardScreen = React.lazy(() => import("screens/board"));
+const EpicScreen = React.lazy(() => import("screens/epic"));
 
 const useCurrentRoute = () => {
   const units = useLocation().pathname.split("/");
@@ -13,7 +14,7 @@ const useCurrentRoute = () => {
   return units[units.length - 1];
 };
 
-export const ProjectScreen = () => {
+const ProjectScreen = () => {
   const route = useCurrentRoute();
 
   useUrlQueryParam(["name"]);
@@ -40,6 +41,8 @@ export const ProjectScreen = () => {
     </Container>
   );
 };
+
+export default ProjectScreen;
 
 const Container = styled.div`
   display: grid;
