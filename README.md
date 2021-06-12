@@ -1,46 +1,35 @@
-# Getting Started with Create React App
+## 简介
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+此项目为学习[React](https://react.docschina.org/) [TypeScript](https://www.typescriptlang.org/)以及相关内容为目的  
+如无例外 (如[error-boundaries](https://zh-hans.reactjs.org/docs/error-boundaries.html)、[Context](https://zh-hans.reactjs.org/docs/context.html)等) 组件均使用 [React Hook](https://zh-hans.reactjs.org/docs/hooks-intro.html) 编写  
+全局状态暂时采用 Context 管理(也有尝试过 Redux , 考虑到项目较为迷你, 所以切换回了 Context)
 
-## Available Scripts
+## 参阅文档
 
-In the project directory, you can run:
+### 核心内容
 
-### `yarn start`
+[React](https://react.docschina.org/)  
+[TypeScript](https://www.typescriptlang.org/)  
+[TypeScript --中文文档(版本较落后)](https://www.tslang.cn/)  
+[TypeScript 入门教程](https://ts.xcatliu.com/)  
+[React TypeScript Cheatsheet](https://react-typescript-cheatsheet.netlify.app/)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### React 生态相关
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+[Create React App](https://create-react-app.dev/)  
+[React Router](https://reactrouter.com/)  
+[React Router(中文)](https://react-router.docschina.org/)
+[Redux](https://redux.js.org/)  
+[Redux (中文)](https://cn.redux.js.org/)  
+[React Redux](https://react-redux.js.org/)  
+[Redux Toolkit](https://redux-toolkit.js.org/)  
+[React Query](https://react-query.tanstack.com/)
 
-### `yarn test`
+### 组件库
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+[Ant Design](https://ant.design/index-cn)
+[React Beatiful DND(rbd) --基于 React 的拖拽组件库](https://github.com/atlassian/react-beautiful-dnd)
 
-### `yarn build`
+### 其他
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+[craco](https://www.npmjs.com/package/@craco/craco)
