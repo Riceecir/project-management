@@ -1,6 +1,6 @@
 import { Login } from "unauthenticated-app/login";
 import { Register } from "unauthenticated-app/register";
-import React, { useState } from "react";
+import React from "react";
 import { Card, Button, Divider, message } from "antd";
 import styled from "@emotion/styled";
 /* logo and bgimg */
@@ -8,10 +8,19 @@ import logo from "assets/logo.svg";
 import left from "assets/left.svg";
 import right from "assets/right.svg";
 import { useDocumentTitle } from "utils/custom-hook";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 
 const UnauthenticatedApp = () => {
   useDocumentTitle("请登录/注册");
-  const [isRegister, setIsRegister] = useState(true);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isRegister = location.pathname.toLowerCase() === "/login";
   const handleError = (error: Error) => {
     message.error(error.message);
   };
@@ -21,13 +30,28 @@ const UnauthenticatedApp = () => {
       <Background />
       <ShadowCard>
         <Title>{isRegister ? "请登录" : "请注册"}</Title>
-        {isRegister ? (
-          <Login onError={handleError} />
-        ) : (
-          <Register onError={handleError} />
-        )}
+        <Routes>
+          <Navigate to={"/login"} />
+
+          <Route
+            path={"/login"}
+            element={
+              <Login onSuccess={() => navigate("/")} onError={handleError} />
+            }
+          />
+
+          <Route
+            path={"/register"}
+            element={
+              <Register onSuccess={() => navigate("/")} onError={handleError} />
+            }
+          />
+        </Routes>
         <Divider />
-        <Button type="link" onClick={() => setIsRegister(!isRegister)}>
+        <Button
+          type="link"
+          onClick={() => navigate(isRegister ? "/register" : "/login")}
+        >
           {isRegister ? "没有账号?注册新账号" : "已有账号?直接登录"}
         </Button>
       </ShadowCard>
@@ -58,6 +82,7 @@ const Header = styled.div`
   background-size: 10rem;
   width: 100%;
 `;
+
 const ShadowCard = styled(Card)`
   width: ${cardWidth};
   min-height: 56rem;

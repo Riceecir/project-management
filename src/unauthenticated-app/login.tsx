@@ -3,14 +3,20 @@ import { useAuth } from "context/auth-context";
 import { Form, Input, Button } from "antd";
 import { useAsync } from "utils/custom-hook";
 
-export const Login = ({ onError }: { onError: (error: Error) => void }) => {
+export const Login = ({
+  onError,
+  onSuccess,
+}: {
+  onError: (error: Error) => void;
+  onSuccess: () => void;
+}) => {
   const { login } = useAuth();
   const { run, isLoading } = useAsync(undefined, { throwOnError: true });
   const handleSubmit = async (values: {
     username: string;
     password: string;
   }) => {
-    run(login(values)).catch(onError);
+    run(login(values)).then(onSuccess).catch(onError);
   };
   /* onFinish 根据 Form.Item 返回对应的 object */
   return (

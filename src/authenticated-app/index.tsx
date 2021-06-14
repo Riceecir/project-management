@@ -16,17 +16,15 @@ const ProjectScreen = React.lazy(() => import("screens/project"));
 const AuthenticatedApp = () => {
   return (
     <Container>
-      <Router>
-        <Header />
-        <Main>
-          <Routes>
-            <Navigate to={"/projects"} replace />
-            <Route path={"/projects"} element={<ProjectList />} />
-            <Route path={"/projects/:id/*"} element={<ProjectScreen />} />
-          </Routes>
-        </Main>
-        <ProjectModal />
-      </Router>
+      <Header />
+      <Main>
+        <Routes>
+          <Navigate to={"/projects"} replace />
+          <Route path={"/projects"} element={<ProjectList />} />
+          <Route path={"/projects/:id/*"} element={<ProjectScreen />} />
+        </Routes>
+      </Main>
+      <ProjectModal />
     </Container>
   );
 };

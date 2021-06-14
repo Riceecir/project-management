@@ -3,7 +3,13 @@ import React from "react";
 import { Form, Input, Button } from "antd";
 import { useAsync } from "utils/custom-hook";
 
-export const Register = ({ onError }: { onError: (error: Error) => void }) => {
+export const Register = ({
+  onError,
+  onSuccess,
+}: {
+  onError: (error: Error) => void;
+  onSuccess: () => void;
+}) => {
   const { register } = useAuth();
   const { run, isLoading } = useAsync(undefined, { throwOnError: true });
   const handleSubmit = async ({
@@ -17,7 +23,7 @@ export const Register = ({ onError }: { onError: (error: Error) => void }) => {
     if (cpassword !== values.password) {
       return onError(new Error("请确认两次输入的密码相同!"));
     }
-    run(register(values)).catch(onError);
+    run(register(values)).then(onSuccess).catch(onError);
   };
 
   return (
