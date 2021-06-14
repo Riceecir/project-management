@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { ButtonNoPadding, Row } from "components/lib";
 import { useAuth } from "context/auth-context";
 import { Button, Dropdown, Menu } from "antd";
 import styled from "@emotion/styled";
 import { ReactComponent as SoftwareLogo } from "assets/software-logo.svg";
-import { Navigate, Routes, Route } from "react-router";
+import { Navigate, Routes, Route, useNavigate } from "react-router";
 import { BrowserRouter as Router } from "react-router-dom";
-import { resetRoute } from "utils";
 import { ProjectModal } from "screens/project-list/project-modal";
 import { ProjectPopover } from "components/project-popover";
 import { UserPopover } from "components/user-popover";
@@ -35,10 +34,15 @@ const AuthenticatedApp = () => {
 export default AuthenticatedApp;
 
 const Header = () => {
+  const navigate = useNavigate();
+
   return (
     <PageHeader between={true}>
       <HeaderLeft gap={true}>
-        <ButtonNoPadding type="link" onClick={resetRoute}>
+        <ButtonNoPadding
+          type="link"
+          onClick={() => navigate("/", { replace: true })}
+        >
           <SoftwareLogo width="15rem" height={"100%"} />
         </ButtonNoPadding>
         <ProjectPopover />
