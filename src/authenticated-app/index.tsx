@@ -20,7 +20,7 @@ const AuthenticatedApp = () => {
         <Header />
         <Main>
           <Routes>
-            <Navigate to={"/projects"} />
+            <Navigate to={"/projects"} replace />
             <Route path={"/projects"} element={<ProjectList />} />
             <Route path={"/projects/:id/*"} element={<ProjectScreen />} />
           </Routes>
@@ -39,10 +39,7 @@ const Header = () => {
   return (
     <PageHeader between={true}>
       <HeaderLeft gap={true}>
-        <ButtonNoPadding
-          type="link"
-          onClick={() => navigate("/", { replace: true })}
-        >
+        <ButtonNoPadding type="link" onClick={() => navigate("/")}>
           <SoftwareLogo width="15rem" height={"100%"} />
         </ButtonNoPadding>
         <ProjectPopover />
